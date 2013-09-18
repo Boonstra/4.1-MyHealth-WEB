@@ -19,29 +19,66 @@ class ApiController extends Controller
 	 */
 	public function filters()
 	{
-		return array();
+		return array(
+			'accessControl',
+			array(
+				'ext.starship.RestfullYii.filters.ERestFilter +
+				REST.GET, REST.PUT, REST.POST, REST.DELETE'
+			),
+		);
 	}
 
-	// Actions
+	/**
+	 * @return array actions
+	 */
+	public function actions()
+	{
+		return array(
+			'REST.'=>'ext.starship.RestfullYii.actions.ERestActionProvider',
+		);
+	}
+
+	/**
+	 * @return array accessRules
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow', 'actions'=>array('REST.GET', 'REST.PUT', 'REST.POST', 'REST.DELETE'),
+				'users'=>array('*'),
+			),
+			array('deny',
+				'users'=>array('*'),
+			),
+		);
+	}
+
+	public function actionLogin()
+	{
+		var_dump('Moi');
+
+		Yii::app()->end();
+	}
+
 	public function actionList()
 	{
-		// Get the respective model instance
-		switch($_GET['model'])
-		{
-			case 'posts':
-				$models = Post::model()->findAll();
-				break;
-			default:
-				$this->_sendResponse(200, json_encode(array('message' => 'failed')));
-
-			Yii::app()->end();
-
+//		// Get the respective model instance
+//		switch($_GET['model'])
+//		{
+//			case 'users':
+//				$models = User::model()->findAll();
+//				break;
+//			default:
+//				$this->_sendResponse(200, json_encode(array('message' => 'failed')));
+//
+//			Yii::app()->end();
+//
 //				// Model not implemented error
 //				$this->_sendResponse(501, sprintf(
 //					'Error: Mode <b>list</b> is not implemented for model <b>%s</b>',
 //					$_GET['model']) );
 //				Yii::app()->end();
-		}
+//		}
 //		// Did we get some results?
 //		if(empty($models)) {
 //			// No
