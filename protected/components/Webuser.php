@@ -39,7 +39,7 @@ class WebUser extends CWebUser {
         }
     }
 
-    public function __set($name, $value) {
+    public function __set($name, $value) { //todo check if values get saved to the database
         try {
             return parent::__set($name, $value);
         } catch (CException $e) {

@@ -38,8 +38,8 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, email, first_login, language, wrong_logins, last_login, role, practitioner_id, bsn', 'required'),
-			array('first_login, wrong_logins, role, practitioner_id', 'numerical', 'integerOnly'=>true),
+			array('username, password, email, first_login, language, wrong_logins, last_login, practitioner_id, bsn', 'required'),
+			array('first_login, wrong_logins, practitioner_id', 'numerical', 'integerOnly'=>true),
 			array('username', 'length', 'max'=>32),
 			array('password', 'length', 'max'=>512),
 			array('email', 'length', 'max'=>64),
@@ -47,7 +47,7 @@ class User extends CActiveRecord
 			array('bsn', 'length', 'max'=>9),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, username, password, email, first_login, language, wrong_logins, last_login, role, practitioner_id', 'safe', 'on'=>'search'),
+			array('id, username, password, email, first_login, language, wrong_logins, last_login, practitioner_id', 'safe', 'on'=>'search'),
 		);
 	}
 
