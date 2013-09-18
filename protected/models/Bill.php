@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'tbl_bill':
  * @property integer $id
  * @property integer $user_id
+ * @property boolean $paid
  *
  * The followings are the available model relations:
  * @property User $user
@@ -29,7 +30,7 @@ class Bill extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id', 'required'),
+			array('user_id', 'required' , 'paid'),
 			array('user_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -58,6 +59,7 @@ class Bill extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'user_id' => 'User',
+			'paid' => 'Paid',
 		);
 	}
 

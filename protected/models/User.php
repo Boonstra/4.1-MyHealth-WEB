@@ -12,8 +12,8 @@
  * @property string $language
  * @property integer $wrong_logins
  * @property string $last_login
- * @property integer $role
  * @property integer $practitioner_id
+ * @property string $bsn
  *
  * The followings are the available model relations:
  * @property Bill[] $bills
@@ -38,12 +38,13 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('username, password, email, first_login, language, wrong_logins, last_login, role, practitioner_id', 'required'),
+			array('username, password, email, first_login, language, wrong_logins, last_login, role, practitioner_id, bsn', 'required'),
 			array('first_login, wrong_logins, role, practitioner_id', 'numerical', 'integerOnly'=>true),
 			array('username', 'length', 'max'=>32),
 			array('password', 'length', 'max'=>512),
 			array('email', 'length', 'max'=>64),
 			array('language', 'length', 'max'=>12),
+			array('bsn', 'length', 'max'=>9),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, username, password, email, first_login, language, wrong_logins, last_login, role, practitioner_id', 'safe', 'on'=>'search'),
@@ -78,8 +79,8 @@ class User extends CActiveRecord
 			'language' => 'Language',
 			'wrong_logins' => 'Wrong Logins',
 			'last_login' => 'Last Login',
-			'role' => 'Role',
 			'practitioner_id' => 'Practitioner',
+			'bsn' => 'Burger service nummer',
 		);
 	}
 
@@ -109,8 +110,8 @@ class User extends CActiveRecord
 		$criteria->compare('language',$this->language,true);
 		$criteria->compare('wrong_logins',$this->wrong_logins);
 		$criteria->compare('last_login',$this->last_login,true);
-		$criteria->compare('role',$this->role);
 		$criteria->compare('practitioner_id',$this->practitioner_id);
+		$criteria->compare('bsn',$this->bsn);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

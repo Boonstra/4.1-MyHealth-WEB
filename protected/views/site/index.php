@@ -3,9 +3,7 @@
 
 $this->pageTitle=Yii::app()->name;
 
-
-var_dump(Yii::app()->user->id);
-$user = User::model()->find('id='.Yii::app()->user->id);
+echo CPasswordHelper::hashPassword('user');
 
 ?>
 
