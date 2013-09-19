@@ -3,6 +3,8 @@
 
 $this->pageTitle=Yii::app()->name;
 
+CPasswordHelper::hashPassword("user");
+
 ?>
 
 <h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
