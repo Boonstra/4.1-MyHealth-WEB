@@ -14,7 +14,10 @@ class UserIdentity extends CUserIdentity {
      */
     private $_id;
 
-    public function authenticate() {
+	/**
+	 * @return int
+	 */
+	public function authenticate() {
         /* User provided email and password */
         $username = $this->username;
         $password = $this->password;

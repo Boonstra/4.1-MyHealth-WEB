@@ -34,26 +34,33 @@ class ApiController extends Controller
 
 	public function actionLogin()
 	{
-		$username = $password = "";
+		var_dump($_REQUEST);
 
-		if (isset($_GET['username']) &&
-			strlen($_GET['username']) > 0)
+//		$username = $password = "";
+//
+//		if (isset($_GET['username']) &&
+//			strlen($_GET['username']) > 0)
+//		{
+//			$username = $_GET['username'];
+//		}
+//
+//		if (isset($_GET['password']) &&
+//			strlen($_GET['password']) > 0)
+//		{
+//			$password = $_GET['password'];
+//		}
+//
+//		$loginForm = new LoginForm();
+//
+//		$loginForm->username = $username;
+//		$loginForm->password = $password;
+
+
+
+		if ($this->_checkUserAuthentication())
 		{
-			$username = $_GET['username'];
+			$this->_sendResponse(200, CJSON::encode(array('message' => 'success', 'user' => $user->)));
 		}
-
-		if (isset($_GET['password']) &&
-			strlen($_GET['password']) > 0)
-		{
-			$password = $_GET['password'];
-		}
-
-		$loginForm = new LoginForm();
-
-		$loginForm->username = $username;
-		$loginForm->password = $password;
-
-
 
 		echo CJSON::encode(array(1, 2, 3));
 	}
@@ -264,7 +271,7 @@ class ApiController extends Controller
 	 * @access private
 	 * @return void
 	 */
-	private function sendResponse($status = 200, $body = '', $content_type = 'text/html')
+	private function _sendResponse($status = 200, $body = '', $content_type = 'text/html')
 	{
 		$status_header = 'HTTP/1.1 ' . $status . ' ' . $this->_getStatusCodeMessage($status);
 		// set the status
@@ -413,4 +420,42 @@ class ApiController extends Controller
 //			$this->_sendResponse(401, 'Error: User Password is invalid');
 //		}
 //	}
+
+	/**
+	 * @param string $username
+	 * @param string $password
+	 *
+	 * @return bool $authenticated
+	 */
+	private function _checkUserAuthentication($username = "", $password = "")
+	{
+		if (strlen($username) <= 0 &&
+			isset($_REQUEST['username']) &&
+			strlen($_REQUEST['username']) > 0)
+		{
+			$username = $_REQUEST['username'];
+		}
+		else
+		{
+			return false;
+		}
+
+		if (strlen($password) <= 0 &&
+			isset($_REQUEST['password']) &&
+			strlen($_REQUEST['password']) > 0)
+		{
+			$password = $_REQUEST['password'];
+		}
+		else
+		{
+			return false;
+		}
+
+		$loginForm = new LoginForm();
+
+		$loginForm->username = $username;
+		$loginForm->password = $password;
+
+		return $loginForm->login();
+	}
 }

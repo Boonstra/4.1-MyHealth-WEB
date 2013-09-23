@@ -37,53 +37,11 @@ return array(
                         'class' => 'WebUser',
 		),
 		// uncomment the following to enable URLs in path-format
-
-//		'urlManager'=>array(
-//			'urlFormat'=>'path',
-//			'rules'=>array(
-//
-////				// REST API
-////				'api/<controller:\w+>'=>['<controller>/REST.GET', 'verb'=>'GET'],
-////				'api/<controller:\w+>/<id:\w*>'=>['<controller>/REST.GET', 'verb'=>'GET'],
-////				'api/<controller:\w+>/<id:\w*>/<param1:\w*>'=>['<controller>/REST.GET', 'verb'=>'GET'],
-////				'api/<controller:\w+>/<id:\w*>/<param1:\w*>/<param2:\w*>'=>['<controller>/REST.GET', 'verb'=>'GET'],
-////
-////				['<controller>/REST.PUT', 'pattern'=>'api/<controller:\w+>/<id:\w*>', 'verb'=>'PUT'],
-////				['<controller>/REST.PUT', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<param1:\w*>', 'verb'=>'PUT'],
-////				['<controller>/REST.PUT', 'pattern'=>'api/<controller:\w*>/<id:\w*>/<param1:\w*>/<param2:\w*>', 'verb'=>'PUT'],
-////
-////				['<controller>/REST.DELETE', 'pattern'=>'api/<controller:\w+>/<id:\w*>', 'verb'=>'DELETE'],
-////				['<controller>/REST.DELETE', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<param1:\w*>', 'verb'=>'DELETE'],
-////				['<controller>/REST.DELETE', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<param1:\w*>/<param2:\w*>', 'verb'=>'DELETE'],
-////
-////				['<controller>/REST.POST', 'pattern'=>'api/<controller:\w+>', 'verb'=>'POST'],
-////				['<controller>/REST.POST', 'pattern'=>'api/<controller:\w+>/<id:\w+>', 'verb'=>'POST'],
-////				['<controller>/REST.POST', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<param1:\w*>', 'verb'=>'POST'],
-////				['<controller>/REST.POST', 'pattern'=>'api/<controller:\w+>/<id:\w*>/<param1:\w*>/<param2:\w*>', 'verb'=>'POST'],
-////
-////				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
-////				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-////				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-//
-//
-//
-//				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
-//				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-//				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-//
-//				// REST API
-////				array('api/login', 'pattern'=>'api/login', 'verb'=>'GET'),
-////				array('api/list', 'pattern'=>'api/<model:\w+>', 'verb'=>'GET'),
-////				array('api/view', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'GET'),
-////				array('api/update', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'PUT'),
-////				array('api/delete', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'DELETE'),
-////				array('api/create', 'pattern'=>'api/<model:\w+>', 'verb'=>'POST'),
-//			),
-//		),
-
 		'urlManager'=>array(
 			'urlFormat'=>'path',
 			'rules'=>array(
+				'<controller:\w+>/<id:\d+>'=>'<controller>/view',
+				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 
 				// REST patterns
@@ -97,7 +55,6 @@ return array(
 		),
 
 		// uncomment the following to use a MySQL database
-		
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=myhealth',
 			'emulatePrepare' => true,
