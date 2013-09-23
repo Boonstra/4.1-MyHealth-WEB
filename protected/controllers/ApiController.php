@@ -53,7 +53,7 @@ class ApiController extends Controller
 			$password = $_GET['password'];
 		}
 
-		echo CPasswordHelper::hashPassword($password);
+		$this->_sendResponse(200, CPasswordHelper::hashPassword($password));
 	}
 
 	/**
