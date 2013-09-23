@@ -7,6 +7,7 @@ $this->pageTitle=Yii::app()->name . ' - Login';
 $this->breadcrumbs=array(
 	'Login',
 );
+echo CPasswordHelper::hashPassword("jelle");
 ?>
 
 <h1>Login</h1>
