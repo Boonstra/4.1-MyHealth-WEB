@@ -2,26 +2,45 @@
 /* @var $this BillController */
 /* @var $model Bill */
 
-$this->breadcrumbs=array(
-	'Bills'=>array('index'),
-	$model->id,
+$this->breadcrumbs = array(
+    'Bills' => array('index'),
+    $model->id,
 );
 
-$this->menu=array(
-	array('label'=>'List Bill', 'url'=>array('index')),
-	array('label'=>'Create Bill', 'url'=>array('create')),
-	array('label'=>'Update Bill', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Bill', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Bill', 'url'=>array('admin')),
+$this->menu = array(
+    array('label' => 'List Bill', 'url' => array('index')),
 );
 ?>
 
 <h1>View Bill #<?php echo $model->id; ?></h1>
 
-<?php $this->widget('zii.widgets.CDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
-		'id',
-		'user_id',
-	),
-)); ?>
+<?php
+$this->widget('zii.widgets.CDetailView', array(
+    'data' => $model,
+    'attributes' => array(
+        array(
+            'name' => 'paid',
+            'value' => $model->paid == 0 ? 'No' : 'Yes', //todo, translation
+        ),
+        array(
+            'name' => 'payment_by',
+            'value' => $model->payment_by == 0 ? Yii::app()->user->username : 'Insurance company', //todo, translation
+        ),
+        array(
+          'name'=>'Total price',  
+          'value'=>$model->getTotalPrice(),  
+        ),
+    ),
+));
+?>
+
+<?php
+$this->widget('zii.widgets.grid.CGridView', array(
+    'dataProvider' => new CArrayDataProvider($model->orders),
+    'columns' => array(
+        'description',
+        'code',
+        'price',
+    ),
+));
+?>

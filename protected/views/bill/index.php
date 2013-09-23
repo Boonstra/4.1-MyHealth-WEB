@@ -6,10 +6,6 @@ $this->breadcrumbs=array(
 	'Bills',
 );
 
-$this->menu=array(
-	array('label'=>'Create Bill', 'url'=>array('create')),
-	array('label'=>'Manage Bill', 'url'=>array('admin')),
-);
 ?>
 
 <h1>Bills</h1>
