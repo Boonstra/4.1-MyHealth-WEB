@@ -3,7 +3,7 @@
 
 $this->pageTitle=Yii::app()->name;
 
-echo CPasswordHelper::hashPassword('user');
+CPasswordHelper::hashPassword("user");
 
 ?>
 
