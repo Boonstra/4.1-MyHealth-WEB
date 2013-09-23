@@ -46,6 +46,7 @@ return array(
 
 				// REST patterns
 				array('api/login', 'pattern'=>'api/login', 'verb'=>'GET'),
+				array('api/getEncryptedPassword', 'pattern'=>'api/getEncryptedPassword', 'verb'=>'GET'),
 //				array('api/list', 'pattern'=>'api/<model:\w+>', 'verb'=>'GET'),
 //				array('api/view', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'GET'),
 //				array('api/update', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'PUT'),

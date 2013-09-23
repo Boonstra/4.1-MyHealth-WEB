@@ -44,6 +44,18 @@ class ApiController extends Controller
 		$this->_sendResponse(200, CJSON::encode(array('message' => 'failed')));
 	}
 
+	public function actionGetEncryptedPassword()
+	{
+		$password = "";
+
+		if (isset($_GET['password']))
+		{
+			$password = $_GET['password'];
+		}
+
+		echo CPasswordHelper::hashPassword($password);
+	}
+
 	/**
 	 *
 	 */
