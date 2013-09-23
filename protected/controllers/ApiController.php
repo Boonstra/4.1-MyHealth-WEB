@@ -34,38 +34,19 @@ class ApiController extends Controller
 
 	public function actionLogin()
 	{
-		var_dump($_REQUEST);
+		list($resultCode, $user) = $this->_checkUserAuthentication();
 
-//		$username = $password = "";
-//
-//		if (isset($_GET['username']) &&
-//			strlen($_GET['username']) > 0)
-//		{
-//			$username = $_GET['username'];
-//		}
-//
-//		if (isset($_GET['password']) &&
-//			strlen($_GET['password']) > 0)
-//		{
-//			$password = $_GET['password'];
-//		}
-//
-//		$loginForm = new LoginForm();
-//
-//		$loginForm->username = $username;
-//		$loginForm->password = $password;
-
-
-
-		if ($this->_checkUserAuthentication())
+		if ($resultCode === 0)
 		{
-			$this->_sendResponse(200, CJSON::encode(array('message' => 'success', 'user' => $user->)));
+			$this->_sendResponse(200, CJSON::encode(array('message' => 'success', 'user' => $user->attributes)));
 		}
 
-		echo CJSON::encode(array(1, 2, 3));
+		$this->_sendResponse(200, CJSON::encode(array('message' => 'failed')));
 	}
 
-	// {{{ actionList
+	/**
+	 *
+	 */
 	public function actionList()
 	{
 //		$this->_checkAuth();
@@ -393,39 +374,41 @@ class ApiController extends Controller
 		return (isset($codes[$status])) ? $codes[$status] : '';
 	}
 
-//	/**
-//	 * Checks if a request is authorized
-//	 *
-//	 * @access private
-//	 * @return void
-//	 */
-//	private function _checkAuth()
-//	{
-//		return;
-//
-//		// Check if we have the USERNAME and PASSWORD HTTP headers set?
-//		if(!(isset($_SERVER['HTTP_X_'.self::APPLICATION_ID.'_USERNAME']) and isset($_SERVER['HTTP_X_'.self::APPLICATION_ID.'_PASSWORD']))) {
-//			// Error: Unauthorized
-//			$this->_sendResponse(401);
-//		}
-//		$username = $_SERVER['HTTP_X_'.self::APPLICATION_ID.'_USERNAME'];
-//		$password = $_SERVER['HTTP_X_'.self::APPLICATION_ID.'_PASSWORD'];
-//		// Find the user
-//		$user=User::model()->find('LOWER(username)=?',array(strtolower($username)));
-//		if($user===null) {
-//			// Error: Unauthorized
-//			$this->_sendResponse(401, 'Error: User Name is invalid');
-//		} else if(!$user->validatePassword($password)) {
-//			// Error: Unauthorized
-//			$this->_sendResponse(401, 'Error: User Password is invalid');
-//		}
-//	}
+	/**
+	 * @return UserIdentity $user
+	 */
+	private function _getUserIdentityFromRequest()
+	{
+		$username = $password = "";
+
+		if (isset($_REQUEST['username']) &&
+			strlen($_REQUEST['username']) > 0)
+		{
+			$username = $_REQUEST['username'];
+		}
+
+		if (isset($_REQUEST['password']) &&
+			strlen($_REQUEST['password']) > 0)
+		{
+			$password = $_REQUEST['password'];
+		}
+
+		$userIdentity = new UserIdentity($username, $password);
+
+		return $userIdentity;
+	}
 
 	/**
+	 * This method takes a username and password (or gets them from $_REQUEST when empty) to check whether or not they
+	 * match with a User record from the database.
+	 *
+	 * Returns an array with as fist value an integer indicating whether the user is 0: Valid, 1: Invalid, or 2: Blocked.
+	 * The second value in the returned array is the User model instance.
+	 *
 	 * @param string $username
 	 * @param string $password
 	 *
-	 * @return bool $authenticated
+	 * @return array [int 0 | 1 | 2, User user]
 	 */
 	private function _checkUserAuthentication($username = "", $password = "")
 	{
@@ -451,11 +434,16 @@ class ApiController extends Controller
 			return false;
 		}
 
-		$loginForm = new LoginForm();
+		$user = User::model()->findByAttributes(array('username' => $username));
 
-		$loginForm->username = $username;
-		$loginForm->password = $password;
-
-		return $loginForm->login();
+		if ($user === null ||
+			!CPasswordHelper::verifyPassword($password, $user->password))
+		{
+			return array(1, $user);
+		}
+		else
+		{
+			return array(0, $user);
+		}
 	}
 }

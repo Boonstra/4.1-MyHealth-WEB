@@ -15,7 +15,7 @@ class UserIdentity extends CUserIdentity {
     private $_id;
 
 	/**
-	 * @return int
+	 * @return bool
 	 */
 	public function authenticate() {
         /* User provided email and password */
@@ -28,11 +28,12 @@ class UserIdentity extends CUserIdentity {
             $this->errorCode=self::ERROR_USERNAME_INVALID;
         } else if (!CPasswordHelper::verifyPassword($password, $record->password)) { // Username does exist, but user entered wrong password.
             $this->errorCode=self::ERROR_PASSWORD_INVALID;
-        } else { // Authentication was succesfull.
+        } else { // Authentication was successful.
             $this->_id=$record->id;
             
             $this->errorCode=self::ERROR_NONE;
         }
+
         return !$this->errorCode;
     }
      
