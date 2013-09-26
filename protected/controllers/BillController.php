@@ -112,13 +112,16 @@ class BillController extends Controller {
     /**
      * Lists all models.
      */
-    public function actionIndex() {
-        $dataProvider = new CActiveDataProvider('Bill',
-                        array(
-                            'criteria' => array(
-                                'condition' => 'user_id='.Yii::app()->user->id,
-                            )
-                        )
+    public function actionIndex($paid) {
+
+        $paid = $paid == 0 ? 0 : 1;
+
+        $dataProvider = new CActiveDataProvider('Bill', array(
+            'criteria' => array(
+                'condition' => 'user_id=' . Yii::app()->user->id,
+                'condition' => 'paid='.$paid,
+            )
+                )
         );
         $this->render('index', array(
             'dataProvider' => $dataProvider,

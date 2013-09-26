@@ -5,6 +5,9 @@ class SiteController extends Controller {
     /**
      * Declares class-based actions.
      */
+    
+    public $defaultAction = 'login';
+    
     public function actions() {
         return array(
             // captcha action renders the CAPTCHA image displayed on the contact page
@@ -81,12 +84,12 @@ class SiteController extends Controller {
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
             // validate user input and redirect to the previous page if valid
-            if($model->validate() && $this->accountAvailible($model->username) && $model->login()){
+            if($model->validate() && User::model()->accountAvailable($model->username) && $model->login()){
                 //todo check if account is availible (failed logins)
                 if (Yii::app()->user->first_login == 1) {
                     $this->redirect(array("user/updatePassword", "id" => Yii::app()->user->id));
                 } else {
-                    $this->redirect(Yii::app()->user->returnUrl);
+                    $this->redirect(array("bill/index",'paid'=>0));
                 }
             } else {
                 $this->saveFailedLogin($model->username);
@@ -94,16 +97,6 @@ class SiteController extends Controller {
         }
         // display the login form
         $this->render('login', array('model' => $model));
-    }
-
-    private function accountAvailible($username) {
-        $user = User::model()->findByAttributes(array('username' => $username));
-        $ipadress = Yii::app()->getRequest()->getUserHostAddress();
-        $failedLogins = FailedLogins::model()->findAll('user_id=' . $user->id . ' && ipadress="' . $ipadress . '" && datetime > "' . date("Y-m-d H:i:s", strtotime('-24 hours')) . '"');
-        if (count($failedLogins) >= 3) {
-            return false;
-        }
-        return true;
     }
 
     private function saveFailedLogin($username) {

@@ -53,6 +53,8 @@ class LoginForm extends CFormModel
 				$this->addError('password','Incorrect username or password.');
 		}
 	}
+        
+        
 
 	/**
 	 * Logs in the user using the given username and password in the model.
