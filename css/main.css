@@ -244,3 +244,6 @@ div.search-form
 #mainmenu ul li ul li.active a,
 #mainmenu ul li ul li a:hover { color: #fff; }
 #mainmenu ul li ul li{clear: left;}
+
+#bill-grid tr.odd { cursor: pointer; }
+#bill-grid tr.even { cursor: pointer; }
