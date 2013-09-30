@@ -10,10 +10,6 @@ $this->breadcrumbs = array(
 <h1>Bills</h1>
 
 <?php
-//$this->widget('zii.widgets.CListView', array(
-//	'dataProvider'=>$dataProvider,
-//	'itemView'=>'_view',
-//)); 
 
 $this->widget('zii.widgets.grid.CGridView', array(
     'id' => 'bill-grid',
