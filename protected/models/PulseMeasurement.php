@@ -6,20 +6,19 @@
  * The followings are the available columns in table 'tbl_measurement':
  * @property integer $id
  * @property integer $user_id
- * @property integer $high
- * @property integer $low
+ * @property integer $value
  * @property string $datetime
  *
  * The followings are the available model relations:
  */
-class BloodPressureMeasurement extends CActiveRecord
+class PulseMeasurement extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'tbl_blood_pressure_measurement';
+		return 'tbl_pulse_measurement';
 	}
 
 	/**
@@ -29,9 +28,9 @@ class BloodPressureMeasurement extends CActiveRecord
 	{
 		return array(
 			// The following fields are required
-			array('user_id, high, low, datetime', 'required'),
+			array('user_id, value, datetime', 'required'),
 			// Numerical values
-			array('user_id, high, low', 'numerical', 'integerOnly' => true,),
+			array('user_id, value', 'numerical', 'integerOnly' => true,),
 			// Datetime should be the following format
 			array('datetime', 'date', 'format'=>'yyyy-MM-dd HH:mm:ss'),
 			// The following rule is used by search().
@@ -80,7 +79,7 @@ class BloodPressureMeasurement extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return BloodPressureMeasurement the static model class
+	 * @return PulseMeasurement the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

@@ -102,16 +102,16 @@ class ApiController extends Controller
 
 		switch($_GET['model'])
 		{
-			case 'bloodPressureMeasurements':
+			case 'bloodPressureMeasurement':
 				$models = BloodPressureMeasurement::model()->findAll($criteria);
 				break;
 
-			case 'pulseMeasurements':
-				$models = BloodPressureMeasurement::model()->findAll($criteria);
+			case 'pulseMeasurement':
+				$models =PulseMeasurement::model()->findAll($criteria);
 				break;
 
-			case 'ECGMeasurements':
-				$models = BloodPressureMeasurement::model()->findAll($criteria);
+			case 'ECGMeasurement':
+				$models = ECGMeasurement::model()->findAll($criteria);
 				break;
 
 			default:
