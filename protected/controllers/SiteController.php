@@ -86,7 +86,7 @@ class SiteController extends Controller {
             // validate user input and redirect to the previous page if valid
             if($model->validate() && User::model()->accountAvailable($model->username) && $model->login()){
                 //todo check if account is availible (failed logins)
-                if (Yii::app()->user->first_login === 1) {
+                if ((int)Yii::app()->user->first_login === 1) {
                     $this->redirect(array("user/updatePassword", "id" => Yii::app()->user->id));
                 } else {
                     $this->redirect(array("bill/index",'paid'=>0));
