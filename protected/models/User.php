@@ -113,7 +113,13 @@ class User extends CActiveRecord {
         ));
     }
 
-    public function accountAvailable($username) {
+	/**
+	 * Checks whether or not the user's account is available (not blocked)
+	 *
+	 * @param $username
+	 * @return bool
+	 */
+	public function accountAvailable($username) {
         $user = User::model()->findByAttributes(array('username' => $username));
         $ipadress = Yii::app()->getRequest()->getUserHostAddress();
         $failedLogins = FailedLogins::model()->findAll('user_id=' . $user->id . ' && ipadress="' . $ipadress . '" && datetime > "' . date("Y-m-d H:i:s", strtotime('-24 hours')) . '"');

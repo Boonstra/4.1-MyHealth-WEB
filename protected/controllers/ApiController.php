@@ -15,11 +15,6 @@
 class ApiController extends Controller
 {
 	/**
-	 * Key which has to be in HTTP USERNAME and PASSWORD headers
-	 */
-	Const APPLICATION_ID = 'ASCCPE';
-
-	/**
 	 * @return array action filters
 	 */
 	public function filters()
@@ -27,23 +22,19 @@ class ApiController extends Controller
 		return array();
 	}
 
-	public function actionIndex()
-	{
-
-	}
-
+	/**
+	 *
+	 */
 	public function actionLogin()
 	{
-		list($resultCode, $user) = $this->_checkUserAuthentication();
+		$user = $this->_checkUserAuthentication();
 
-		if ($resultCode === 0)
-		{
-			$this->_sendResponse(200, CJSON::encode(array('message' => 'success', 'user' => $user->attributes)));
-		}
-
-		$this->_sendResponse(200, CJSON::encode(array('message' => 'failed')));
+		$this->_sendResponse(200, CJSON::encode(array('message' => 'success', 'user' => $user->attributes)));
 	}
 
+	/**
+	 *
+	 */
 	public function actionGetEncryptedPassword()
 	{
 		$password = "";
@@ -61,25 +52,84 @@ class ApiController extends Controller
 	 */
 	public function actionList()
 	{
-//		$this->_checkAuth();
-//		switch($_GET['model'])
-//		{
-//			case 'posts': // {{{
-//				$models = Post::model()->findAll();
-//				break; // }}}
-//			default: // {{{
-//				$this->_sendResponse(501, sprintf('Error: Mode <b>list</b> is not implemented for model <b>%s</b>',$_GET['model']) );
-//				exit; // }}}
-//		}
-//		if(is_null($models)) {
-//			$this->_sendResponse(200, sprintf('No items where found for model <b>%s</b>', $_GET['model']) );
-//		} else {
-//			$rows = array();
-//			foreach($models as $model)
-//				$rows[] = $model->attributes;
-//
-//			$this->_sendResponse(200, CJSON::encode($rows));
-//		}
+		$user = $this->_checkUserAuthentication();
+
+		$criteria = new CDbCriteria();
+
+		$criteria->addCondition('user_id = ' . $user->id);
+
+		if (isset($_REQUEST['offset']) &&
+			is_numeric($_REQUEST['offset']) &&
+			$_REQUEST['offset'] >= 0)
+		{
+			$criteria->offset = $_REQUEST['userID'];
+		}
+
+		if (isset($_REQUEST['limit']) &&
+			is_numeric($_REQUEST['limit']) &&
+			$_REQUEST['limit'] >= 0)
+		{
+			$criteria->limit = $_REQUEST['userID'];
+		}
+
+		$dateFrom = $dateTo = "";
+
+		if (isset($_REQUEST['dateFrom']) &&
+			strlen($_REQUEST['dateFrom']) > 0)
+		{
+			$dateFrom = $_REQUEST['dateFrom'];
+		}
+
+		if (isset($_REQUEST['dateTo']) &&
+			strlen($_REQUEST['dateTo']) > 0)
+		{
+			$dateTo = $_REQUEST['dateTo'];
+		}
+
+		if (!empty($dateFrom) &&
+			!empty($dateTo))
+		{
+			$criteria->addBetweenCondition('datetime', $dateFrom, $dateTo);
+		}
+		else if (!empty($dateFrom))
+		{
+			$criteria->addBetweenCondition('datetime', $dateFrom, date('Y-m-d h:i:s'));
+		}
+		else if (!empty($dateTo))
+		{
+			$criteria->addBetweenCondition('datetime', '1900-01-01 00:00:00', $dateTo);
+		}
+
+		switch($_GET['model'])
+		{
+			case 'bloodPressureMeasurements':
+				$models = BloodPressureMeasurement::model()->findAll($criteria);
+				break;
+
+			case 'pulseMeasurements':
+				$models = BloodPressureMeasurement::model()->findAll($criteria);
+				break;
+
+			case 'ECGMeasurements':
+				$models = BloodPressureMeasurement::model()->findAll($criteria);
+				break;
+
+			default:
+				$this->_sendResponse(501, CJSON::encode(array("message" => "failed", "error" => "The list action is not implemented for this model")));
+				exit;
+		}
+
+		$rows = array();
+
+		if (count($models) > 0)
+		{
+			foreach ($models as $model)
+			{
+				$rows[] = $model->attributes;
+			}
+		}
+
+		$this->_sendResponse(200, CJSON::encode(array("message" => "success", "measurements" => $rows)));
 	}
 
 	/* Shows a single item
@@ -422,7 +472,7 @@ class ApiController extends Controller
 	 *
 	 * @return array [int 0 | 1 | 2, User user]
 	 */
-	private function _checkUserAuthentication($username = "", $password = "")
+	private function _getUserAuthentication($username = "", $password = "")
 	{
 		if (strlen($username) <= 0 &&
 			isset($_REQUEST['username']) &&
@@ -448,14 +498,64 @@ class ApiController extends Controller
 
 		$user = User::model()->findByAttributes(array('username' => $username));
 
-		if ($user === null ||
-			!CPasswordHelper::verifyPassword($password, $user->password))
+		// Check if user object was found
+		if ($user === null)
 		{
 			return array(1, $user);
 		}
+		// Check if account is available
+		else if (!$user->accountAvailable($user->username))
+		{
+			return array(2, $user);
+		}
+		// Check if passwords match
+		else if (!CPasswordHelper::verifyPassword($password, $user->password))
+		{
+			// Store failed login
+			$failedLogin = new FailedLogins();
+
+			$failedLogin->ipadress = Yii::app()->getRequest()->getUserHostAddress();
+			$failedLogin->datetime = date("Y-m-d H:i:s");
+			$failedLogin->user_id  = $user->id;
+
+			$failedLogin->save();
+
+			return array(1, $user);
+		}
+		// Successful login
 		else
 		{
 			return array(0, $user);
 		}
+	}
+
+	/**
+	 * Outputs a JSON response to the page when authentication has failed,
+	 * otherwise returns a user object.
+	 *
+	 * Uses $this->_getUserAuthentication
+	 *
+	 * @return $user
+	 */
+	private function _checkUserAuthentication()
+	{
+		list($resultCode, $user) = $this->_getUserAuthentication();
+
+		// Successful
+		if ($resultCode === 0)
+		{
+			return $user;
+		}
+		// Blocked
+		else if ($resultCode === 2)
+		{
+			$this->_sendResponse(200, CJSON::encode(array('message' => 'blocked')));
+
+			return null;
+		}
+
+		$this->_sendResponse(200, CJSON::encode(array('message' => 'failed')));
+
+		return null;
 	}
 }
