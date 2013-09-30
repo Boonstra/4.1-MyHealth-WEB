@@ -23,7 +23,7 @@ class ApiController extends Controller
 	}
 
 	/**
-	 *
+	 * Checks authorization. Returns success and the user model upon success.
 	 */
 	public function actionLogin()
 	{
@@ -33,7 +33,7 @@ class ApiController extends Controller
 	}
 
 	/**
-	 *
+	 * Encrypts the password that is sent through the $_GET variable.
 	 */
 	public function actionGetEncryptedPassword()
 	{
@@ -48,7 +48,9 @@ class ApiController extends Controller
 	}
 
 	/**
+	 * Lists all implemented objects within the given datetime range.
 	 *
+	 * A limit and offset can be set.
 	 */
 	public function actionList()
 	{
@@ -139,26 +141,7 @@ class ApiController extends Controller
 	 */
 	public function actionView()
 	{
-//		$this->_checkAuth();
-//		// Check if id was submitted via GET
-//		if(!isset($_GET['id']))
-//			$this->_sendResponse(500, 'Error: Parameter <b>id</b> is missing' );
-//
-//		switch($_GET['model'])
-//		{
-//			// Find respective model
-//			case 'posts': // {{{
-//				$model = Post::model()->findByPk($_GET['id']);
-//				break; // }}}
-//			default: // {{{
-//				$this->_sendResponse(501, sprintf('Mode <b>view</b> is not implemented for model <b>%s</b>',$_GET['model']) );
-//				exit; // }}}
-//		}
-//		if(is_null($model)) {
-//			$this->_sendResponse(404, 'No Item found with id '.$_GET['id']);
-//		} else {
-//			$this->_sendResponse(200, CJSON::encode($_GET['model'], $model->attributes));
-//		}
+		$this->_sendResponse(501, CJSON::encode(array("message" => "failed", "error" => "Not implemented yet")));
 	}
 
 	/**
@@ -228,59 +211,14 @@ class ApiController extends Controller
 	}
 
 	/**
-	 * Update a single iten
+	 * Update a single item
 	 *
 	 * @access public
 	 * @return void
 	 */
 	public function actionUpdate()
 	{
-//		$this->_checkAuth();
-//
-//		// Get PUT parameters
-//		parse_str(file_get_contents('php://input'), $put_vars);
-//
-//		switch($_GET['model'])
-//		{
-//			// Find respective model
-//			case 'posts': // {{{
-//				$model = Post::model()->findByPk($_GET['id']);
-//				break; // }}}
-//			default: // {{{
-//				$this->_sendResponse(501, sprintf('Error: Mode <b>update</b> is not implemented for model <b>%s</b>',$_GET['model']) );
-//				exit; // }}}
-//		}
-//		if(is_null($model))
-//			$this->_sendResponse(400, sprintf("Error: Didn't find any model <b>%s</b> with ID <b>%s</b>.",$_GET['model'], $_GET['id']) );
-//
-//		// Try to assign PUT parameters to attributes
-//		foreach($put_vars as $var=>$value) {
-//			// Does model have this attribute?
-//			if($model->hasAttribute($var)) {
-//				$model->$var = $value;
-//			} else {
-//				// No, raise error
-//				$this->_sendResponse(500, sprintf('Parameter <b>%s</b> is not allowed for model <b>%s</b>', $var, $_GET['model']) );
-//			}
-//		}
-//		// Try to save the model
-//		if($model->save()) {
-//			$this->_sendResponse(200, sprintf('The model <b>%s</b> with id <b>%s</b> has been updated.', $_GET['model'], $_GET['id']) );
-//		} else {
-//			$msg = "<h1>Error</h1>";
-//			$msg .= sprintf("Couldn't update model <b>%s</b>", $_GET['model']);
-//			$msg .= "<ul>";
-//			foreach($model->errors as $attribute=>$attr_errors) {
-//				$msg .= "<li>Attribute: $attribute</li>";
-//				$msg .= "<ul>";
-//				foreach($attr_errors as $attr_error) {
-//					$msg .= "<li>$attr_error</li>";
-//				}
-//				$msg .= "</ul>";
-//			}
-//			$msg .= "</ul>";
-//			$this->_sendResponse(500, $msg );
-//		}
+		$this->_sendResponse(501, CJSON::encode(array("message" => "failed", "error" => "Not implemented yet")));
 	}
 
 	/**
@@ -291,30 +229,49 @@ class ApiController extends Controller
 	 */
 	public function actionDelete()
 	{
-//		$this->_checkAuth();
-//
-//		switch($_GET['model'])
-//		{
-//			// Load the respective model
-//			case 'posts': // {{{
-//				$model = Post::model()->findByPk($_GET['id']);
-//				break; // }}}
-//			default: // {{{
-//				$this->_sendResponse(501, sprintf('Error: Mode <b>delete</b> is not implemented for model <b>%s</b>',$_GET['model']) );
-//				exit; // }}}
-//		}
-//		// Was a model found?
-//		if(is_null($model)) {
-//			// No, raise an error
-//			$this->_sendResponse(400, sprintf("Error: Didn't find any model <b>%s</b> with ID <b>%s</b>.",$_GET['model'], $_GET['id']) );
-//		}
-//
-//		// Delete the model
-//		$num = $model->delete();
-//		if($num>0)
-//			$this->_sendResponse(200, sprintf("Model <b>%s</b> with ID <b>%s</b> has been deleted.",$_GET['model'], $_GET['id']) );
-//		else
-//			$this->_sendResponse(500, sprintf("Error: Couldn't delete model <b>%s</b> with ID <b>%s</b>.",$_GET['model'], $_GET['id']) );
+		$this->_checkUserAuthentication();
+
+		if (isset($_GET['id']) &&
+			is_numeric($_GET['id']) &&
+			$_GET['id'] >= 0)
+		{
+			$ID = $_GET['id'];
+		}
+		else
+		{
+			$this->_sendResponse(500, CJSON::encode(array("message" => "failed", "error" => "No ID was provided")));
+		}
+
+		$model = null;
+
+		switch($_GET['model'])
+		{
+			case 'bloodPressureMeasurement':
+				$model = BloodPressureMeasurement::model()->findByPk($ID);
+				break;
+
+			case 'pulseMeasurement':
+				$model = PulseMeasurement::model()->findByPk($ID);
+				break;
+
+			case 'ECGMeasurement':
+				$model = ECGMeasurement::model()->findByPk($ID);
+				break;
+
+			default:
+				$this->_sendResponse(501, CJSON::encode(array("message" => "failed", "error" => "The delete action is not implemented for this model")));
+				Yii::app()->end();
+		}
+
+		if (!is_null($model) &&
+			$model->delete())
+		{
+			$this->_sendResponse(200, CJSON::encode(array("message" => "success")));
+		}
+		else
+		{
+			$this->_sendResponse(500, CJSON::encode(array("message" => "failed", "error" => "No model with the provided ID could be found")));
+		}
 	}
 
 	/**
