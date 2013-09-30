@@ -25,7 +25,7 @@ class UserController extends Controller {
     public function accessRules() {
         return array(
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('view', 'update'),
+                'actions' => array('view', 'update','updatePassword' ),
                 'users' => array('@'),
             ),
             array('deny', // deny all users
@@ -47,6 +47,31 @@ class UserController extends Controller {
         ));
     }
 
+    public function actionUpdatePassword($id) {
+        if (Yii::app()->user->id !== $id) {
+            throw new CHttpException(403, "Access denied!");
+        }
+        $model = $this->loadModel($id);
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+
+        if (isset($_POST['User'])) {
+            var_dump($_POST['User']);
+            $model->password = $_POST['User']['password'];
+            $model->password_repeat = $_POST['User']['password_repeat'];
+            if ($model->validate()) {
+                $model->password = CPasswordHelper::hashPassword($model->password);
+                $model->first_login = 0;
+                $model->save(false);
+                $this->redirect(array('view', 'id' => $model->id));
+            }
+        }
+        $model->password = null;
+        $this->render('updatePassword', array(
+            'model' => $model,
+        ));
+    }
 
     /**
      * Updates a particular model.

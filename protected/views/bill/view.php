@@ -7,9 +7,6 @@ $this->breadcrumbs = array(
     $model->id,
 );
 
-$this->menu = array(
-    array('label' => 'List Bill', 'url' => array('index')),
-);
 ?>
 
 <h1>View Bill #<?php echo $model->id; ?></h1>
