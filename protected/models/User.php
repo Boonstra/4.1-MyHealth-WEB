@@ -22,6 +22,8 @@
  */
 class User extends CActiveRecord {
 
+    public $password_repeat;
+    
     /**
      * @return string the associated database table name
      */
@@ -36,16 +38,16 @@ class User extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('username, password, email, first_login, language, wrong_logins, last_login, practitioner_id, bsn', 'required'),
-            array('first_login, wrong_logins, practitioner_id', 'numerical', 'integerOnly' => true),
+            array('username, password, email, password_repeat', 'required'),
             array('username', 'length', 'max' => 32),
-            array('password', 'length', 'max' => 512),
-            array('email', 'length', 'max' => 64),
+            array('password, password_repeat', 'length', 'max' => 32),
+            array('password', 'compare', 'compareAttribute' => 'password_repeat'),
+            array('email', 'email', 'allowEmpty' => false),
             array('language', 'length', 'max' => 12),
             array('bsn', 'length', 'max' => 9),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, username, password, email, first_login, language, wrong_logins, last_login, practitioner_id', 'safe', 'on' => 'search'),
+            array('id, username, password, email, first_login, language, last_login, practitioner_id', 'safe', 'on' => 'search'),
         );
     }
 
