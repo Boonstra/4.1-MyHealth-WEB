@@ -107,7 +107,7 @@ class ApiController extends Controller
 				break;
 
 			case 'pulseMeasurement':
-				$models =PulseMeasurement::model()->findAll($criteria);
+				$models = PulseMeasurement::model()->findAll($criteria);
 				break;
 
 			case 'ECGMeasurement':
@@ -116,7 +116,7 @@ class ApiController extends Controller
 
 			default:
 				$this->_sendResponse(501, CJSON::encode(array("message" => "failed", "error" => "The list action is not implemented for this model")));
-				exit;
+				Yii::app()->end();
 		}
 
 		$rows = array();
@@ -169,8 +169,69 @@ class ApiController extends Controller
 	 */
 	public function actionCreate()
 	{
-//		$this->_checkAuth();
+		$user = $this->_checkUserAuthentication();
+
+		$_GET['user_id'] = $user->id;
+
+		switch($_GET['model'])
+		{
+			case 'bloodPressureMeasurement':
+				$model = new BloodPressureMeasurement();
+				break;
+
+			case 'pulseMeasurement':
+				$model = new PulseMeasurement();
+				break;
+
+			case 'ECGMeasurement':
+				$model = new ECGMeasurement();
+				break;
+
+			default:
+				$this->_sendResponse(501, CJSON::encode(array("message" => "failed", "error" => "The create action is not implemented for this model")));
+				Yii::app()->end();
+		}
+
+		// Loop through get variables
+		foreach ($_GET as $variableName => $value)
+		{
+			// Check if the model has this variable
+			if ($model->hasAttribute($variableName))
+			{
+				$model->$variableName = $value;
+			}
+//			else
+//			{
+//				$this->_sendResponse(500, CJSON::encode(array("message" => "failed", "error" => "No such variable found in current model")));
 //
+//				Yii::app()->end();
+//			}
+		}
+
+		// Return if successfully saved
+		if($model->save())
+		{
+			$this->_sendResponse(200, CJSON::encode(array("message" => "success", "measurement" => $model->attributes)));
+
+			Yii::app()->end();
+		}
+var_dump("hoi");
+		$errorMessage = "";
+
+		foreach ($model->errors as $attribute => $attributeErrors)
+		{
+			$errorMessage .= $attribute . ": ";
+
+			foreach ($attributeErrors as $attributeError)
+			{
+				$errorMessage .= $attributeError . ", ";
+			}
+
+			$errorMessage .= " - ";
+		}
+
+		$this->_sendResponse(500, CJSON::encode(array("message" => "failed", "error" => $errorMessage)));
+
 //		switch($_GET['model'])
 //		{
 //			// Get an instance of the respective model
