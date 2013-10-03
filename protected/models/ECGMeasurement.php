@@ -6,7 +6,7 @@
  * The followings are the available columns in table 'tbl_measurement':
  * @property integer $id
  * @property integer $user_id
- * @property integer $value
+ * @property string $value
  * @property string $datetime
  *
  * The followings are the available model relations:
@@ -30,7 +30,7 @@ class ECGMeasurement extends CActiveRecord
 			// The following fields are required
 			array('user_id, value, datetime', 'required'),
 			// Numerical values
-			array('user_id, value', 'numerical', 'integerOnly' => true,),
+			array('user_id', 'numerical', 'integerOnly' => true,),
 			// Datetime should be the following format
 			array('datetime', 'date', 'format'=>'yyyy-MM-dd HH:mm:ss'),
 			// The following rule is used by search().
