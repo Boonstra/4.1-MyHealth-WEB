@@ -39,9 +39,10 @@ return array(
 		// uncomment the following to enable URLs in path-format
 		'urlManager'=>array(
 			'urlFormat'=>'path',
+			'showScriptName' =>false,
 			'rules'=>array(
 				// REST patterns (must come before the other controller rules, as these are very specific)
-				array('api/login', 'pattern'=>'api/login', 'verb'=>'GET'),
+				array('api/login', 'pattern'=>'api/login/', 'verb'=>'GET'),
 				array('api/getEncryptedPassword', 'pattern'=>'api/getEncryptedPassword', 'verb'=>'GET'),
 				array('api/list', 'pattern'=>'api/<model:\w+>', 'verb'=>'GET'),
 //				array('api/view', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'GET'),
