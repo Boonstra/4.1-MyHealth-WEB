@@ -64,14 +64,14 @@ class ApiController extends Controller
 			is_numeric($_REQUEST['offset']) &&
 			$_REQUEST['offset'] >= 0)
 		{
-			$criteria->offset = $_REQUEST['userID'];
+			$criteria->offset = $_REQUEST['offset'];
 		}
 
 		if (isset($_REQUEST['limit']) &&
 			is_numeric($_REQUEST['limit']) &&
 			$_REQUEST['limit'] >= 0)
 		{
-			$criteria->limit = $_REQUEST['userID'];
+			$criteria->limit = $_REQUEST['limit'];
 		}
 
 		$dateFrom = $dateTo = "";
@@ -403,30 +403,6 @@ class ApiController extends Controller
 		);
 
 		return (isset($codes[$status])) ? $codes[$status] : '';
-	}
-
-	/**
-	 * @return UserIdentity $user
-	 */
-	private function _getUserIdentityFromRequest()
-	{
-		$username = $password = "";
-
-		if (isset($_REQUEST['username']) &&
-			strlen($_REQUEST['username']) > 0)
-		{
-			$username = $_REQUEST['username'];
-		}
-
-		if (isset($_REQUEST['password']) &&
-			strlen($_REQUEST['password']) > 0)
-		{
-			$password = $_REQUEST['password'];
-		}
-
-		$userIdentity = new UserIdentity($username, $password);
-
-		return $userIdentity;
 	}
 
 	/**
