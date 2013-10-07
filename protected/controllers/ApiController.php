@@ -101,6 +101,8 @@ class ApiController extends Controller
 		{
 			$criteria->addBetweenCondition('datetime', '1900-01-01 00:00:00', $dateTo);
 		}
+                
+                $criteria->order = 'datetime DESC';
 
 		switch($_GET['model'])
 		{
